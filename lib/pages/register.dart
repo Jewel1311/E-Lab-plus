@@ -71,7 +71,7 @@ class _RegisterState extends State<Register> {
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
-          backgroundColor: ElabColors.secondaryColor,
+          backgroundColor: ElabColors.greyColor,
           textColor: Colors.white,
           fontSize: 16.0
         );
@@ -147,7 +147,7 @@ class _RegisterState extends State<Register> {
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
-          backgroundColor: ElabColors.secondaryColor,
+          backgroundColor: ElabColors.greyColor,
           textColor: Colors.white,
           fontSize: 16.0
         );

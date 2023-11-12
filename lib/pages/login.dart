@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
-          backgroundColor: ElabColors.secondaryColor,
+          backgroundColor: ElabColors.greyColor,
           textColor: Colors.white,
           fontSize: 16.0,
         );
