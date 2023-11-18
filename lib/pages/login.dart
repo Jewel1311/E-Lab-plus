@@ -68,6 +68,12 @@ class _LoginState extends State<Login> {
           email: emailController.text,
           password: passwordController.text,
         );
+        final lab = await supabase.from('labs').select('id').match({'user_id':
+        supabase.auth.currentUser!.id});
+        if(lab.length < 1){
+          await Supabase.instance.client.auth.signOut();
+          throw Exception();
+        }
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
       }catch(e){

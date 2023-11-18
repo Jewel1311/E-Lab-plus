@@ -1,4 +1,5 @@
 import 'package:elabplus/pages/addtests.dart';
+import 'package:elabplus/pages/bookings.dart';
 import 'package:elabplus/pages/dashboard.dart';
 import 'package:elabplus/pages/home.dart';
 import 'package:elabplus/pages/login.dart';
@@ -31,6 +32,7 @@ class ElabPlus extends StatelessWidget {
         '/login' :(context) => const Login(),
         '/dashboard':(context) => const Dashboard(),
         '/addtests' :(context) => const AddTests(),
+        '/bookings' :(context) => const ViewBookings()
       },
     );
   }

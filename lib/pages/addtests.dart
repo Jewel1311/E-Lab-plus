@@ -1,5 +1,6 @@
 import 'package:elabplus/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,7 +46,7 @@ class _AddTestsState extends State<AddTests> {
           padding: const EdgeInsets.all(10.0), 
           child: isLoading?
             const SpinKitFadingCircle(color:ElabColors.primaryColor ,)
-          :Column(
+          : SingleChildScrollView( child: Column(
             children: [
               testName(),
               const SizedBox(height: 20,),
@@ -56,6 +57,7 @@ class _AddTestsState extends State<AddTests> {
               addButton()
             ],
           ),
+          )
         ),
       );
       
@@ -103,7 +105,13 @@ class _AddTestsState extends State<AddTests> {
               children: [
                 const Text('Price', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16, color: ElabColors.greyColor),),
                 const SizedBox(height: 5,),
-                TextField(decoration: const InputDecoration(border: OutlineInputBorder(),
+                TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                ], 
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.currency_rupee_sharp, color: Colors.black,),
                 ), 
                 style: const TextStyle(fontWeight: FontWeight.bold),

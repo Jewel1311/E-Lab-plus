@@ -23,6 +23,7 @@ class _TestsState extends State<Tests> {
     getTests();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -109,7 +110,7 @@ class _TestsState extends State<Tests> {
                   onTap: () {
                     deleteTest(tests[index]['id']);
                   },
-                  child: const Text('remove', style: TextStyle(color: Colors.red),),
+                  child: const Text('remove', style: TextStyle(color: Colors.red,fontSize: 16),),
                  )
                 )
 

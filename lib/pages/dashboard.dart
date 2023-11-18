@@ -1,3 +1,4 @@
+import 'package:elabplus/pages/bookings.dart';
 import 'package:elabplus/pages/profile.dart';
 import 'package:elabplus/pages/tests.dart';
 import 'package:elabplus/style/colors.dart';
@@ -40,7 +41,7 @@ class _DashboardState extends State<Dashboard> {
       body:  IndexedStack(
         index: _selectedIndex,
         children:const [
-          Center(child: Text('Bookings')),
+          ViewBookings(),
           Tests(),
           Center(child: Text('Results')),
           Profile(),

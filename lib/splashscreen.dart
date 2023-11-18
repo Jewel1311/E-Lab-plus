@@ -54,11 +54,12 @@ class _SplashScreenState extends State<SplashScreen> {
               Icon(Icons.biotech_rounded ,size: 60, color:ElabColors.secondaryColor) ,
               Text('E-Lab',
               style: TextStyle(
-                fontSize: 50,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
                 color: ElabColors.secondaryColor
               ),
               ),
+              Icon(Icons.add, size: 45, color: ElabColors.secondaryColor,)
             ],
           ),
           SizedBox(height: 10),

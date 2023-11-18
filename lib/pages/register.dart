@@ -1,6 +1,7 @@
 import 'package:elabplus/style/colors.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,6 +24,7 @@ class _RegisterState extends State<Register> {
   bool passwordValidationError = false;
   bool isLoading = false;
   TimeOfDay? selectedTime;
+  bool confirmpasswordError = false;
 
 
   final TextEditingController emailController = TextEditingController();
@@ -31,6 +33,10 @@ class _RegisterState extends State<Register> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController opentimeController = TextEditingController();
   final TextEditingController closetimeController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
+
 
 
 
@@ -42,6 +48,8 @@ class _RegisterState extends State<Register> {
     passwordController.dispose();
     opentimeController.dispose();
     closetimeController.dispose();
+    phoneController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -64,7 +72,7 @@ class _RegisterState extends State<Register> {
 
   // check input validations
   void onCreate() {
-    if ([emailController.text, nameController.text, cityController.text, passwordController.text, opentimeController.text, closetimeController.text].any((text) => text.isEmpty)) { 
+    if ([emailController.text, nameController.text, cityController.text, passwordController.text, opentimeController.text, closetimeController.text, confirmPasswordController.text].any((text) => text.isEmpty)) { 
 
         Fluttertoast.showToast(
           msg: "All Fields are required",
@@ -79,6 +87,7 @@ class _RegisterState extends State<Register> {
         setState(() {
           emailValidationError = false;
           passwordValidationError = false;
+          confirmpasswordError = false;
         });
         // email validation
         if(! EmailValidator.validate(emailController.text)){
@@ -92,7 +101,12 @@ class _RegisterState extends State<Register> {
             passwordValidationError = true;
           });
         }
-        if( emailValidationError == false && passwordValidationError == false){
+        if(passwordController.text != confirmPasswordController.text){
+          setState(() {
+            confirmpasswordError = true;
+          });
+        }
+        if( emailValidationError == false && passwordValidationError == false && confirmpasswordError == false){
           registerLab();
         }
     }
@@ -120,6 +134,7 @@ class _RegisterState extends State<Register> {
         'city': cityController.text,
         'opentime':  convert12HourTo24Hour(opentimeController.text),
         'closetime': convert12HourTo24Hour(closetimeController.text),
+        'phone': phoneController.text
 
       };
 
@@ -168,7 +183,7 @@ class _RegisterState extends State<Register> {
   SingleChildScrollView registrationForm(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.fromLTRB(20,5,20,20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -190,6 +205,9 @@ class _RegisterState extends State<Register> {
           const SizedBox(height: 15),
           cityField(),
           const SizedBox(height: 15),
+          phoneField(),
+          const SizedBox(height: 15),
+
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -199,6 +217,8 @@ class _RegisterState extends State<Register> {
           ),
           const SizedBox(height: 15),
           passwordField(),
+          const SizedBox(height: 15),
+          confirmPasswordField(),
           const SizedBox(height: 30),
 
           SizedBox(
@@ -225,7 +245,7 @@ class _RegisterState extends State<Register> {
               )
               ),
           ),
-             const SizedBox(height: 30),
+             const SizedBox(height: 20),
               Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -282,7 +302,30 @@ class _RegisterState extends State<Register> {
           controller: nameController,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           decoration: const InputDecoration(
-            prefixIcon:Icon(Icons.person, color:Colors.black,size: 20, ),
+            prefixIcon:Icon(Icons.biotech, color:Colors.black,size: 20, ),
+          ),     
+        ),
+      ],
+    );
+  }
+
+  Column phoneField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Phone Number', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+        TextField(
+          controller: phoneController,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(10),
+            FilteringTextInputFormatter.digitsOnly,
+             // Allow only digits
+          ], 
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          decoration: const InputDecoration(
+            prefixIcon:Icon(Icons.phone, color:Colors.black,size: 20, ),
+            
           ),     
         ),
       ],
@@ -312,7 +355,7 @@ class _RegisterState extends State<Register> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Opening Time', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+          Text('Booking open from', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
           TextField(
             controller: opentimeController,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -334,7 +377,7 @@ class _RegisterState extends State<Register> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Closing Time', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+          Text('Booking open till', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
           TextField(
             controller: closetimeController,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -369,6 +412,30 @@ Column passwordField() {
                 if (passwordValidationError)
                   Text(
                   'Minimum 6 characters required',
+                  style: TextStyle(color: Colors.red, fontFamily: GoogleFonts.poppins().fontFamily),   
+                ),         
+              ],
+            );
+    }
+
+    
+Column confirmPasswordField() {
+      return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Confirm Password', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+              TextField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                decoration: const InputDecoration(
+                  prefixIcon:Icon(Icons.keyboard, color:Colors.black,size: 20, ),
+                ),     
+              ),
+                // show email validation error
+                if (confirmpasswordError)
+                  Text(
+                  "Passwords don't match",
                   style: TextStyle(color: Colors.red, fontFamily: GoogleFonts.poppins().fontFamily),   
                 ),         
               ],
