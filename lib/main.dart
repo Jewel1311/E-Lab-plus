@@ -1,4 +1,5 @@
 import 'package:elabplus/pages/addtests.dart';
+import 'package:elabplus/pages/bookingdetails.dart';
 import 'package:elabplus/pages/bookings.dart';
 import 'package:elabplus/pages/dashboard.dart';
 import 'package:elabplus/pages/home.dart';
@@ -19,6 +20,7 @@ class ElabPlus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: GoogleFonts.roboto().fontFamily,
       ),
@@ -32,7 +34,8 @@ class ElabPlus extends StatelessWidget {
         '/login' :(context) => const Login(),
         '/dashboard':(context) => const Dashboard(),
         '/addtests' :(context) => const AddTests(),
-        '/bookings' :(context) => const ViewBookings()
+        '/bookings' :(context) => const ViewBookings(),
+        '/bookingdetails' :(context) => const BookingDetails()
       },
     );
   }

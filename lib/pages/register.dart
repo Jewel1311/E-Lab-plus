@@ -31,11 +31,10 @@ class _RegisterState extends State<Register> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController opentimeController = TextEditingController();
-  final TextEditingController closetimeController = TextEditingController();
+  final TextEditingController opentimeController = TextEditingController(text: "6:00 AM");
+  final TextEditingController closetimeController = TextEditingController(text: "6:00 PM");
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
-
 
 
 
@@ -51,6 +50,22 @@ class _RegisterState extends State<Register> {
     phoneController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  bool timeValidation(String opentime, String closetime){
+    final format = DateFormat('h:mm a');
+    final openhour = format.parse(opentime).hour;
+    final closehour = format.parse(closetime).hour;
+    if((openhour < 6 || openhour >= 18)|| (closehour > 18 || closehour <= 6 )){
+      return true;
+    }
+    else if(closehour == 18 ){
+      if(format.parse(closetime).minute == 0){
+        return false;
+      }  
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -95,6 +110,11 @@ class _RegisterState extends State<Register> {
             emailValidationError = true;
           });
         }
+
+        if(timeValidation(opentimeController.text, closetimeController.text)){
+            showAlert(context, 'Time must be between 6:00 AM and 6:00 PM');
+        }
+        
         //password validation
         if(passwordController.text.length < 6){
           setState(() {
@@ -107,7 +127,7 @@ class _RegisterState extends State<Register> {
           });
         }
         if( emailValidationError == false && passwordValidationError == false && confirmpasswordError == false){
-          registerLab();
+          // registerLab();
         }
     }
   }
@@ -207,7 +227,10 @@ class _RegisterState extends State<Register> {
           const SizedBox(height: 15),
           phoneField(),
           const SizedBox(height: 15),
-
+          const Text("Time must be between 6:00 AM and 6:00 PM", style: TextStyle(
+            color: Colors.black,
+          ),),
+          const SizedBox(height: 5,),
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -462,6 +485,26 @@ Column confirmPasswordField() {
     final dateTime = inputFormat.parse(time12Hour);
     final time24Hour = outputFormat.format(dateTime);
     return time24Hour;
+  }
+
+void showAlert(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the alert dialog
+            },
+            child: const Text('Ok'),
+          ),
+          
+        ],
+      );
+    },
+  );
 }
 
 }

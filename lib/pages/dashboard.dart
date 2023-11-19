@@ -1,3 +1,4 @@
+import 'package:elabplus/pages/addtests.dart';
 import 'package:elabplus/pages/bookings.dart';
 import 'package:elabplus/pages/profile.dart';
 import 'package:elabplus/pages/tests.dart';
@@ -43,7 +44,7 @@ class _DashboardState extends State<Dashboard> {
         children:const [
           ViewBookings(),
           Tests(),
-          Center(child: Text('Results')),
+          AddTests(),
           Profile(),
         ],
         ),
@@ -51,7 +52,7 @@ class _DashboardState extends State<Dashboard> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month_outlined),
+            icon: Icon(Icons.calendar_month),
             label: 'Bookings',
           ),
           BottomNavigationBarItem(
@@ -59,8 +60,8 @@ class _DashboardState extends State<Dashboard> {
             label: 'Tests',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.mail_outline),
-            label: 'Results'
+            icon: Icon(Icons.add_box),
+            label: 'Add Tests'
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

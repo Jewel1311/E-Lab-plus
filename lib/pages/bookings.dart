@@ -1,3 +1,4 @@
+import 'package:elabplus/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +20,7 @@ class _ViewBookingsState extends State<ViewBookings> {
   dynamic labId;
   bool isStream = true;
 
-  final List<String> status = ['All','Pending', 'Confirmed', 'Rejected'];
+  final List<String> status = ['All','Pending', 'Confirmed', 'Rejected', 'Completed'];
   String selectedStatus =  'All';
 
   final supabase = Supabase.instance.client;
@@ -69,6 +70,8 @@ class _ViewBookingsState extends State<ViewBookings> {
       return Colors.red;
     case 'confirmed':
       return Colors.green;
+    case 'completed':
+      return ElabColors.primaryColor;
     default:
       return Colors.amberAccent.shade700;
   }
@@ -134,7 +137,9 @@ class _ViewBookingsState extends State<ViewBookings> {
           itemBuilder: (context, index){
            return GestureDetector(
               onTap: () {
-                
+                Navigator.pushNamed(context,'/bookingdetails', arguments: {
+                  'bookingId' : bookingsData[index]['id']
+                });
               },
               child: Container(
             margin: const EdgeInsets.fromLTRB(0,8,0,5),
@@ -211,7 +216,7 @@ class _ViewBookingsState extends State<ViewBookings> {
               onChanged: (String? value) {
                 setState(() {
                   selectedStatus = value!;
-                  if(selectedStatus == 'Confirmed' || selectedStatus == 'Rejected' || selectedStatus == 'Pending'){
+                  if(selectedStatus == 'Confirmed' || selectedStatus == 'Rejected' || selectedStatus == 'Pending' || selectedStatus == 'Completed'){
                     getBookingData(selectedStatus.toLowerCase());
                   }else{
                     getLabStream();
@@ -233,7 +238,9 @@ class _ViewBookingsState extends State<ViewBookings> {
             itemBuilder: (context, index){
              return GestureDetector(
                 onTap: () {
-                 
+                 Navigator.pushNamed(context,'/bookingdetails', arguments: {
+                  'bookingId' : booking[index]['id']
+                });
                 },
                 child:Container(
               margin: const EdgeInsets.fromLTRB(0,8,0,5),

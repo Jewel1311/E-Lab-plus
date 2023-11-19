@@ -42,19 +42,11 @@ class _TestsState extends State<Tests> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(5,0,5,10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           isLoading ? const Text(''):Text('${tests.length} Tests', style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily,
             fontSize: 16 , fontWeight: FontWeight.bold 
           )
-          ),
-          ElevatedButton(onPressed: () {
-              Navigator.pushNamed(context, '/addtests');
-          }, 
-          style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(ElabColors.primaryColor)),
-          child:
-              Text('Add Test', style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.bold),) 
           ),
       ]
       ),
@@ -131,7 +123,7 @@ class _TestsState extends State<Tests> {
       isLoading = true;
     });
     dynamic labId = await supabase.from('labs').select('id').match({'user_id':supabase.auth.currentUser!.id});
-    tests = await supabase.from('tests').select().match({'lab_id':labId[0]['id']});
+    tests = await supabase.from('tests').select().match({'lab_id':labId[0]['id']}).order('id');
     setState(() {
       isLoading = false;
     });
