@@ -163,13 +163,13 @@ class _BookingDetailsState extends State<BookingDetails> {
           .download("results/${bookingDetails[0]['id']}");
       DateTime now = DateTime.now();
       String concatenatedTime =
-          '${now.hour}${now.minute}${now.second}+${now.millisecond}';
+          '${now.hour}${now.minute}${now.second}${now.millisecond}';
       final targetFile = File(
           'storage/emulated/0/Download/Elab_$concatenatedTime${bookingDetails[0]['id']}.pdf');
       targetFile.writeAsBytesSync(file);
 
       Fluttertoast.showToast(
-          msg: "File downloaded successfully ",
+          msg: "File saved to Downloads ",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,

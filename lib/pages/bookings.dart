@@ -100,22 +100,23 @@ class _ViewBookingsState extends State<ViewBookings> {
 
       :
 
-    Padding(
-      padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
-      child: Column(
+     Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Bookings',style: TextStyle(
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.bold,
-                fontSize: 16
-              ), 
-              ),
-              statusDropdown(),
-            ],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10,0,10,0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Bookings',style: TextStyle(
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16
+                ), 
+                ),
+                statusDropdown(),
+              ],
+            ),
           ),
           const SizedBox(height: 10,),
           Expanded(
@@ -127,7 +128,6 @@ class _ViewBookingsState extends State<ViewBookings> {
             isStream? showBookings():showBookingData(),
           )
         ],
-      ),
     );
   }
 
@@ -142,7 +142,7 @@ class _ViewBookingsState extends State<ViewBookings> {
                 });
               },
               child: Container(
-            margin: const EdgeInsets.fromLTRB(0,8,0,5),
+            margin: const EdgeInsets.fromLTRB(10,8,10,10),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -243,7 +243,7 @@ class _ViewBookingsState extends State<ViewBookings> {
                 });
                 },
                 child:Container(
-              margin: const EdgeInsets.fromLTRB(0,8,0,5),
+              margin: const EdgeInsets.fromLTRB(10,8,10,10),
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
