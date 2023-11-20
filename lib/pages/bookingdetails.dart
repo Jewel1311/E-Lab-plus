@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:elabplus/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
+
 
 class BookingDetails extends StatefulWidget {
   const BookingDetails({super.key});
@@ -107,6 +111,31 @@ class _BookingDetailsState extends State<BookingDetails> {
     return formattedDate;
   }
 
+
+  Future sendPushNotification(String userId, String message) async {
+
+    await dotenv.load(fileName: ".env");
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': dotenv.env['URL']!,
+    };
+
+    var body = {
+      'app_id': dotenv.env['APP_ID']!,
+      'include_player_ids': [userId],
+      'contents': {'en': message},
+    };
+
+    await http.post(
+      Uri.parse("https://onesignal.com/api/v1/notifications"),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+  }
+
+
   Future uploadResult() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -128,6 +157,12 @@ class _BookingDetailsState extends State<BookingDetails> {
 
         await supabase.from('booking').update({'status': 'completed'}).match(
             {'id': bookingDetails[0]['id']});
+
+        final profile = await supabase.from('profile').select('onesignaluserid').match({'user_id':bookingDetails[0]['user_id']});
+
+        const message = "Your test results are now available. Please proceed to the Results section on the app to view them.";
+
+        sendPushNotification(profile[0]['onesignaluserid'], message);
 
         Fluttertoast.showToast(
             msg: "Result uploaded",
