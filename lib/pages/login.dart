@@ -65,8 +65,8 @@ class _LoginState extends State<Login> {
       final supabase = Supabase.instance.client;
       try{
         await supabase.auth.signInWithPassword(
-          email: emailController.text,
-          password: passwordController.text,
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
         );
         final lab = await supabase.from('labs').select('id').match({'user_id':
         supabase.auth.currentUser!.id});

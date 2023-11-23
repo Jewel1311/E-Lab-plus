@@ -300,6 +300,7 @@ class _BookingDetailsState extends State<BookingDetails> {
             ),
             ListView.builder(
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: testDetails.length,
                 itemBuilder: (context, index) {
                   return Column(
@@ -542,38 +543,41 @@ class _BookingDetailsState extends State<BookingDetails> {
 
       //download file
       bookingStatus == 'completed'
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
+          ? Padding(
+            padding: const EdgeInsets.fromLTRB(0,0,0,15),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                      onPressed: () {
+                        downloadResult();
+                      },
+                      style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(ElabColors.primaryColor),
+                      ),
+                      icon: const Icon(Icons.download),
+                      label: isUploading
+                          ? const SpinKitFadingCircle(
+                              color: Colors.white,
+                              size: 30,
+                            )
+                          : const Text("Result")),
+                  const SizedBox(width: 10,),
+                  ElevatedButton.icon(
                     onPressed: () {
-                      downloadResult();
+                      showRemove(context, 'Are you sure you want to remove the uploaded result?');
                     },
                     style: const ButtonStyle(
                       backgroundColor:
-                          MaterialStatePropertyAll(ElabColors.primaryColor),
+                          MaterialStatePropertyAll(ElabColors.secondaryColor),
                     ),
-                    icon: const Icon(Icons.download),
-                    label: isUploading
-                        ? const SpinKitFadingCircle(
-                            color: Colors.white,
-                            size: 30,
-                          )
-                        : const Text("Result")),
-                const SizedBox(width: 10,),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    showRemove(context, 'Are you sure you want to remove the uploaded result?');
-                  },
-                  style: const ButtonStyle(
-                    backgroundColor:
-                        MaterialStatePropertyAll(ElabColors.secondaryColor),
+                    icon: const Icon(Icons.cancel),
+                    label: const Text('Remove'),
                   ),
-                  icon: const Icon(Icons.cancel),
-                  label: const Text('Remove'),
-                ),
-              ],
-            )
+                ],
+              ),
+          )
           : const Text('')
     ]);
   }

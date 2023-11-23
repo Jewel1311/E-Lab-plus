@@ -105,7 +105,7 @@ class _RegisterState extends State<Register> {
           confirmpasswordError = false;
         });
         // email validation
-        if(! EmailValidator.validate(emailController.text)){
+        if(! EmailValidator.validate(emailController.text.trim())){
           setState(() {
             emailValidationError = true;
           });
@@ -116,18 +116,18 @@ class _RegisterState extends State<Register> {
         }
         
         //password validation
-        if(passwordController.text.length < 6){
+        if(passwordController.text.trim().length < 6){
           setState(() {
             passwordValidationError = true;
           });
         }
-        if(passwordController.text != confirmPasswordController.text){
+        if(passwordController.text.trim() != confirmPasswordController.text.trim()){
           setState(() {
             confirmpasswordError = true;
           });
         }
         if( emailValidationError == false && passwordValidationError == false && confirmpasswordError == false){
-          // registerLab();
+          registerLab();
         }
     }
   }
@@ -139,22 +139,22 @@ class _RegisterState extends State<Register> {
     final supabase = Supabase.instance.client;
     try{
         await supabase.auth.signUp(
-        email: emailController.text,
-        password: passwordController.text,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
       
       await supabase.auth.signInWithPassword(
-        email: emailController.text,
-        password: passwordController.text,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
 
 
       final Map<String, dynamic> labData = {
-        'labname': nameController.text,
-        'city': cityController.text,
-        'opentime':  convert12HourTo24Hour(opentimeController.text),
-        'closetime': convert12HourTo24Hour(closetimeController.text),
-        'phone': phoneController.text
+        'labname': nameController.text.trim(),
+        'city': cityController.text.trim(),
+        'opentime':  convert12HourTo24Hour(opentimeController.text.trim()),
+        'closetime': convert12HourTo24Hour(closetimeController.text.trim()),
+        'phone': phoneController.text.trim()
 
       };
 
