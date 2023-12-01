@@ -35,7 +35,7 @@ class ElabPlus extends StatelessWidget {
         '/dashboard':(context) => const Dashboard(),
         '/addtests' :(context) => const AddTests(),
         '/bookings' :(context) => const ViewBookings(),
-        '/bookingdetails' :(context) => const BookingDetails()
+        '/bookingdetails' :(context) => const BookingDetails(),
       },
     );
   }

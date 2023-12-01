@@ -221,6 +221,8 @@ class _BookingDetailsState extends State<BookingDetails> {
           textColor: Colors.white,
           fontSize: 16.0);
     }
+
+
   }
 
   @override
@@ -616,9 +618,16 @@ class _BookingDetailsState extends State<BookingDetails> {
                       .from('booking')
                       .update({'status': 'confirmed'}).match(
                           {'id': bookingDetails[0]['id']});
+                  
                   setState(() {
                     bookingStatus = 'confirmed';
                   });
+                  final profile = await supabase.from('profile').select('onesignaluserid').match({'user_id':bookingDetails[0]['user_id']});
+
+                  final message = "Your test booking for ${ formatToCustomFormat(bookingDetails[0]['date'].toString())} ${convert24HourTo12Hour(bookingDetails[0]['timeslot'])} has been confirmed";
+
+                  sendPushNotification(profile[0]['onesignaluserid'], message);
+
                   Fluttertoast.showToast(
                       msg: "Booking Confirmed",
                       toastLength: Toast.LENGTH_LONG,
@@ -669,6 +678,12 @@ class _BookingDetailsState extends State<BookingDetails> {
                 setState(() {
                   bookingStatus = 'rejected';
                 });
+
+                final profile = await supabase.from('profile').select('onesignaluserid').match({'user_id':bookingDetails[0]['user_id']});
+
+                  final message = "Your test booking for ${ formatToCustomFormat(bookingDetails[0]['date'].toString())} ${convert24HourTo12Hour(bookingDetails[0]['timeslot'])} has been rejected";
+
+                  sendPushNotification(profile[0]['onesignaluserid'], message);
 
                 Fluttertoast.showToast(
                     msg: "Booking Rejected",
