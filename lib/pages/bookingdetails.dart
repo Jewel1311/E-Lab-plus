@@ -155,7 +155,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                   const FileOptions(cacheControl: '3600', upsert: false),
             );
 
-        await supabase.from('booking').update({'status': 'completed'}).match(
+        await supabase.from('booking').update({'status': 'completed', 'pay_status':'paid'}).match(
             {'id': bookingDetails[0]['id']});
 
         final profile = await supabase.from('profile').select('onesignaluserid').match({'user_id':bookingDetails[0]['user_id']});
@@ -506,6 +506,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                       fontSize: 18,
                       color: Colors.green),
                 ),
+                Text(" ("+bookingDetails[0]['pay_status']+")",style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, fontWeight: FontWeight.bold),)
               ],
             ),
           ],
@@ -680,8 +681,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                 });
 
                 final profile = await supabase.from('profile').select('onesignaluserid').match({'user_id':bookingDetails[0]['user_id']});
-
-                  final message = "Your test booking for ${ formatToCustomFormat(bookingDetails[0]['date'].toString())} ${convert24HourTo12Hour(bookingDetails[0]['timeslot'])} has been rejected";
+                  final paymessage = bookingDetails[0]['pay_status'] == 'paid'?"Refund will be credited in 2-3 working days" :""; 
+                  final message = "Your test booking for ${ formatToCustomFormat(bookingDetails[0]['date'].toString())} ${convert24HourTo12Hour(bookingDetails[0]['timeslot'])} has been rejected. "+paymessage;
 
                   sendPushNotification(profile[0]['onesignaluserid'], message);
 
