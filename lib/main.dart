@@ -5,6 +5,7 @@ import 'package:elabplus/pages/dashboard.dart';
 import 'package:elabplus/pages/home.dart';
 import 'package:elabplus/pages/login.dart';
 import 'package:elabplus/pages/register.dart';
+import 'package:elabplus/pages/viewmap.dart';
 import 'package:elabplus/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,6 +37,7 @@ class ElabPlus extends StatelessWidget {
         '/addtests' :(context) => const AddTests(),
         '/bookings' :(context) => const ViewBookings(),
         '/bookingdetails' :(context) => const BookingDetails(),
+        '/viewmap': (context) => const ViewMap()
       },
     );
   }

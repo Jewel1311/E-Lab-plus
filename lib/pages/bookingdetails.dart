@@ -474,6 +474,16 @@ class _BookingDetailsState extends State<BookingDetails> {
                 fontSize: 16,
               ),
             ),
+            const SizedBox(height: 10,),
+            ElevatedButton.icon(onPressed: (){
+              Navigator.pushNamed(context, '/viewmap',arguments: {
+                'latitude': contactDetails[0]['latitude'],
+                'longitude': contactDetails[0]['longitude']
+              });
+            }, 
+            icon: Icon(Icons.pin_drop_outlined, color: Colors.black,), label: Text("View Location", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(ElabColors.greyColor2)),
+            ),
             const SizedBox(
               height: 20,
             ),
