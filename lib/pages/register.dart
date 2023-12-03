@@ -2,10 +2,12 @@ import 'package:elabplus/style/colors.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -25,6 +27,7 @@ class _RegisterState extends State<Register> {
   bool isLoading = false;
   TimeOfDay? selectedTime;
   bool confirmpasswordError = false;
+  bool mapValidationError = false;
 
 
   final TextEditingController emailController = TextEditingController();
@@ -35,6 +38,9 @@ class _RegisterState extends State<Register> {
   final TextEditingController closetimeController = TextEditingController(text: "6:00 PM");
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+
+  MapController mapController = MapController();
+  LatLng markerLatLng = LatLng(0,0);
 
 
 
@@ -49,6 +55,7 @@ class _RegisterState extends State<Register> {
     closetimeController.dispose();
     phoneController.dispose();
     confirmPasswordController.dispose();
+    mapController.dispose();
     super.dispose();
   }
 
@@ -126,7 +133,22 @@ class _RegisterState extends State<Register> {
             confirmpasswordError = true;
           });
         }
-        if( emailValidationError == false && passwordValidationError == false && confirmpasswordError == false){
+        if(markerLatLng.latitude == 0 || markerLatLng.longitude == 0){
+          Fluttertoast.showToast(
+          msg: "Select your lab location on the map",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: ElabColors.greyColor,
+          textColor: Colors.white,
+          fontSize: 16.0
+          );
+          mapValidationError = true;
+        }
+        else{
+          mapValidationError = false;
+        }
+        if( emailValidationError == false && passwordValidationError == false && confirmpasswordError == false && mapValidationError == false){
           registerLab();
         }
     }
@@ -138,10 +160,26 @@ class _RegisterState extends State<Register> {
     });
     final supabase = Supabase.instance.client;
     try{
+      try{
         await supabase.auth.signUp(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+      }catch(e){
+        setState(() {
+          isLoading = false;
+        });
+        Fluttertoast.showToast(
+          msg: "Email already exists",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: ElabColors.greyColor,
+          textColor: Colors.white,
+          fontSize: 16.0
+          );
+        throw Exception();
+      }
       
       await supabase.auth.signInWithPassword(
         email: emailController.text.trim(),
@@ -154,7 +192,9 @@ class _RegisterState extends State<Register> {
         'city': cityController.text.trim(),
         'opentime':  convert12HourTo24Hour(opentimeController.text.trim()),
         'closetime': convert12HourTo24Hour(closetimeController.text.trim()),
-        'phone': phoneController.text.trim()
+        'phone': phoneController.text.trim(),
+        'latitude': markerLatLng.latitude,
+        'longitude' : markerLatLng.longitude
 
       };
 
@@ -242,6 +282,10 @@ class _RegisterState extends State<Register> {
           passwordField(),
           const SizedBox(height: 15),
           confirmPasswordField(),
+          const SizedBox(height: 15),
+          Text("Select your lab location", style: TextStyle(color: ElabColors.greyColor,fontSize: 16, fontWeight: FontWeight.bold),),
+          const SizedBox(height: 15,),
+          mapView(),
           const SizedBox(height: 30),
 
           SizedBox(
@@ -290,6 +334,37 @@ class _RegisterState extends State<Register> {
       ),
     )
     );
+  }
+   Container mapView() {
+    return Container(
+        width: double.infinity,
+        height: 400,
+        child: FlutterMap(
+          mapController: mapController,
+          options: MapOptions(
+              onTap: (tapPosition, point) {
+                setState(() {
+                  markerLatLng = point;
+                });
+              },
+              initialCenter: LatLng(9.580,76.803),
+              
+              initialZoom: 9.2),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            ),
+            MarkerLayer(markers: [
+              Marker(
+                  point: markerLatLng,
+                  child: Icon(
+                    Icons.location_on,
+                    size: 40,
+                    color: Colors.red,
+                  ))
+            ])
+          ],
+        ));
   }
 
   Column emailField() {
