@@ -48,7 +48,17 @@ class _DashboardState extends State<Dashboard> {
           Profile(),
         ],
         ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar:  Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ClipRRect(
+            borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15.0),
+            topRight: Radius.circular(15.0),
+            bottomLeft:Radius.circular(15.0),
+            bottomRight:Radius.circular(15.0),
+          ),
+        child: 
+      BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
@@ -77,6 +87,8 @@ class _DashboardState extends State<Dashboard> {
         unselectedItemColor: ElabColors.secondaryColor,
         
       )
+        )
+        )
     );
   }
 
