@@ -40,10 +40,9 @@ class _RegisterState extends State<Register> {
   final TextEditingController confirmPasswordController = TextEditingController();
 
   MapController mapController = MapController();
-  LatLng markerLatLng = LatLng(0,0);
-
-
-
+  LatLng markerLatLng = LatLng(0, 0);
+  dynamic initialLatitude  = 9.580;
+  dynamic initialLongitude = 76.803;
 
   @override
   void dispose() {
@@ -55,7 +54,6 @@ class _RegisterState extends State<Register> {
     closetimeController.dispose();
     phoneController.dispose();
     confirmPasswordController.dispose();
-    mapController.dispose();
     super.dispose();
   }
 
@@ -133,21 +131,22 @@ class _RegisterState extends State<Register> {
             confirmpasswordError = true;
           });
         }
-        if(markerLatLng.latitude == 0 || markerLatLng.longitude == 0){
+        if(markerLatLng.latitude == 0 || markerLatLng.longitude == 0 ){
+          mapValidationError = true;
           Fluttertoast.showToast(
-          msg: "Select your lab location on the map",
+          msg: "Select lab location on map",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
           backgroundColor: ElabColors.greyColor,
           textColor: Colors.white,
           fontSize: 16.0
-          );
-          mapValidationError = true;
+        );
         }
         else{
           mapValidationError = false;
         }
+
         if( emailValidationError == false && passwordValidationError == false && confirmpasswordError == false && mapValidationError == false){
           registerLab();
         }
@@ -194,8 +193,7 @@ class _RegisterState extends State<Register> {
         'closetime': convert12HourTo24Hour(closetimeController.text.trim()),
         'phone': phoneController.text.trim(),
         'latitude': markerLatLng.latitude,
-        'longitude' : markerLatLng.longitude
-
+        'longitude': markerLatLng.longitude
       };
 
   
@@ -283,10 +281,10 @@ class _RegisterState extends State<Register> {
           const SizedBox(height: 15),
           confirmPasswordField(),
           const SizedBox(height: 15),
-          Text("Select your lab location", style: TextStyle(color: ElabColors.greyColor,fontSize: 16, fontWeight: FontWeight.bold),),
-          const SizedBox(height: 15,),
+          Text('Select lab location',style: TextStyle(fontSize: 16, color: ElabColors.greyColor, fontWeight: FontWeight.bold),),
+          const SizedBox(height: 15),
           mapView(),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
 
           SizedBox(
             width: double.infinity,
@@ -335,7 +333,7 @@ class _RegisterState extends State<Register> {
     )
     );
   }
-   Container mapView() {
+Container mapView() {
     return Container(
         width: double.infinity,
         height: 400,
@@ -347,7 +345,7 @@ class _RegisterState extends State<Register> {
                   markerLatLng = point;
                 });
               },
-              initialCenter: LatLng(9.580,76.803),
+              initialCenter: LatLng(initialLatitude, initialLongitude),
               
               initialZoom: 9.2),
           children: [
