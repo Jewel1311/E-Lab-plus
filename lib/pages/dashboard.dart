@@ -1,4 +1,3 @@
-import 'package:elabplus/pages/addtests.dart';
 import 'package:elabplus/pages/bookings.dart';
 import 'package:elabplus/pages/profile.dart';
 import 'package:elabplus/pages/tests.dart';
@@ -44,7 +43,6 @@ class _DashboardState extends State<Dashboard> {
         children:const [
           ViewBookings(),
           Tests(),
-          AddTests(),
           Profile(),
         ],
         ),
@@ -68,10 +66,6 @@ class _DashboardState extends State<Dashboard> {
           BottomNavigationBarItem(
             icon: Icon(Icons.science),
             label: 'Tests',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: 'Add Tests'
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

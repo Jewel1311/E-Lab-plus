@@ -30,15 +30,20 @@ class Home extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 30),
-          Row(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 100,
+                width: 200,
                 child: ElevatedButton( onPressed: () {
                    Navigator.pushNamed(context, '/register');
                 } ,
-                style:const ButtonStyle(
+                style:ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   backgroundColor:  MaterialStatePropertyAll(ElabColors.greyColor2),
                   
                 ) ,
@@ -54,15 +59,46 @@ class Home extends StatelessWidget {
               ),
               const SizedBox(width: 20,),
               SizedBox(
-                width: 100,
+                width: 200,
                 child: ElevatedButton( onPressed: () {
                    Navigator.pushNamed(context, '/login');
                 } ,
-                style:const ButtonStyle(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   backgroundColor:  MaterialStatePropertyAll(ElabColors.greyColor2),
                   
                 ) ,
-                  child:Text('Log In',
+                
+                  child:Text('Log in as lab',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: GoogleFonts.poppins().fontFamily
+                    )
+                    ),
+                ),
+              ),
+               const SizedBox(width: 20,),
+              SizedBox(
+                width: 200,
+                child: ElevatedButton( onPressed: () {
+                   Navigator.pushNamed(context, '/collector_login');
+                } ,
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  backgroundColor:  MaterialStatePropertyAll(ElabColors.greyColor2),
+                  
+                ) ,
+                  child:Text('Log in as Collector',
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.black,

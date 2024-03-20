@@ -6,25 +6,27 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AddTests extends StatefulWidget {
-  const AddTests({super.key});
+class AddPackages extends StatefulWidget {
+  const AddPackages({super.key});
 
   @override
-  State<AddTests> createState() => _AddTestsState();
+  State<AddPackages> createState() => _AddPackagesState();
 }
 
-class _AddTestsState extends State<AddTests> {
+class _AddPackagesState extends State<AddPackages> {
 
   final supabase = Supabase.instance.client;
   bool isLoading = false;
 
-  final TextEditingController testNameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   final TextEditingController requirementsController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
 
   @override
   void dispose() {
-    testNameController.dispose();
+    nameController.dispose();
+    descriptionController.dispose();
     requirementsController.dispose();
     priceController.dispose();
     super.dispose();
@@ -40,7 +42,7 @@ class _AddTestsState extends State<AddTests> {
           iconTheme: const IconThemeData(color: Colors.black),
           elevation: 0,
           backgroundColor: Colors.white,
-          title: Text("Add Test", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: GoogleFonts.hammersmithOne().fontFamily, color: Colors.black),),
+          title: Text("Add Package", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: GoogleFonts.hammersmithOne().fontFamily, color: Colors.black),),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0), 
@@ -48,11 +50,13 @@ class _AddTestsState extends State<AddTests> {
             const SpinKitFadingCircle(color:ElabColors.primaryColor ,)
           : SingleChildScrollView( child: Column(
             children: [
-              testName(),
+              packageName(),
               const SizedBox(height: 20,),
-              testRequirements(),
+              packageDescription(),
               const SizedBox(height: 20,),
-              testPrice(),
+              packageRequirements(),
+              const SizedBox(height: 20,),
+              packagePrice(),
               const SizedBox(height: 20,),
               addButton()
             ],
@@ -66,7 +70,7 @@ class _AddTestsState extends State<AddTests> {
 
   
 
-  Column testName() {
+  Column packageName() {
     return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -75,13 +79,30 @@ class _AddTestsState extends State<AddTests> {
                 TextField(decoration: const InputDecoration(border: OutlineInputBorder(), prefixIcon: 
                 Icon(Icons.science, color: Colors.black,)),
                 style: const TextStyle(fontWeight: FontWeight.bold),
-                controller: testNameController,
+                controller: nameController,
                 )
               ],
             );
   }
+  Column packageDescription() {
+    return   Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Test Description', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16, color: ElabColors.greyColor),),
+                const SizedBox(height: 5,),
+                TextField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration:  const InputDecoration(border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.list_alt_outlined, color: Colors.black,)),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  controller: descriptionController,
+                  )
+              ],
+            );
+  }
 
-  Column testRequirements() {
+  Column packageRequirements() {
     return   Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -99,7 +120,7 @@ class _AddTestsState extends State<AddTests> {
             );
   }
 
-  Column testPrice() {
+  Column packagePrice() {
     return  Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -136,18 +157,18 @@ class _AddTestsState extends State<AddTests> {
                   ),
                 ),   
               onPressed: () {
-                addTest();
+                addPackage();
               }, 
               child:
-               Text('Add Test',style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, color: Colors.white)
+               Text('Add Package',style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, color: Colors.white)
                )
               ),
     );
   }
 
 
-  Future addTest() async{
-    if ([testNameController.text, priceController.text].any((text) => text.isEmpty)) { 
+  Future addPackage() async{
+    if ([nameController.text, priceController.text, descriptionController.text].any((text) => text.isEmpty)) { 
 
         Fluttertoast.showToast(
           msg: "All Fields are required",
@@ -172,15 +193,17 @@ class _AddTestsState extends State<AddTests> {
 
       final Map<String, dynamic> labData = {
         'lab_id': labId[0]['id'],
-        'testname' : testNameController.text,
+        'name' : nameController.text,
+        'description': descriptionController.text,
         'requirements':requirements,
         'price':int.parse(priceController.text)
       };
 
-      await supabase.from('tests').upsert([labData]);
+      await supabase.from('packages').upsert([labData]);
 
-      testNameController.text = '';
+      nameController.text = '';
       requirementsController.text = '';
+      descriptionController.text = '';
       priceController.text = '';
 
       setState(() {
@@ -188,7 +211,7 @@ class _AddTestsState extends State<AddTests> {
       });
 
       Fluttertoast.showToast(
-          msg: "Test Added Successfully",
+          msg: "Package Added Successfully",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,

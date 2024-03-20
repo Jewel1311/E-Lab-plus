@@ -342,7 +342,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                   );
                 }),
             const Text(
-              "Time Slot",
+              "Date and Time",
               style: TextStyle(
                   color: ElabColors.greyColor,
                   fontWeight: FontWeight.bold,
@@ -374,7 +374,7 @@ class _BookingDetailsState extends State<BookingDetails> {
               height: 10,
             ),
             Text(
-              "${convert24HourTo12Hour(bookingDetails[0]['timeslot'])} - ${addOneHourToCurrentTime(convert24HourTo12Hour(bookingDetails[0]['timeslot']))}",
+              convert24HourTo12Hour(bookingDetails[0]['time']),
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -635,7 +635,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                   });
                   final profile = await supabase.from('profile').select('onesignaluserid').match({'user_id':bookingDetails[0]['user_id']});
 
-                  final message = "Your test booking for ${ formatToCustomFormat(bookingDetails[0]['date'].toString())} ${convert24HourTo12Hour(bookingDetails[0]['timeslot'])} has been confirmed";
+                  final message = "Your test booking for ${ formatToCustomFormat(bookingDetails[0]['date'].toString())} has been confirmed";
 
                   sendPushNotification(profile[0]['onesignaluserid'], message);
 
@@ -692,7 +692,7 @@ class _BookingDetailsState extends State<BookingDetails> {
 
                 final profile = await supabase.from('profile').select('onesignaluserid').match({'user_id':bookingDetails[0]['user_id']});
                   final paymessage = bookingDetails[0]['pay_status'] == 'paid'?"Refund will be credited in 2-3 working days" :""; 
-                  final message = "Your test booking for ${ formatToCustomFormat(bookingDetails[0]['date'].toString())} ${convert24HourTo12Hour(bookingDetails[0]['timeslot'])} has been rejected. "+paymessage;
+                  final message = "Your test booking for ${ formatToCustomFormat(bookingDetails[0]['date'].toString())} has been rejected. "+paymessage;
 
                   sendPushNotification(profile[0]['onesignaluserid'], message);
 

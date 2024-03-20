@@ -4,41 +4,57 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class Tests extends StatefulWidget {
-  const Tests({super.key});
+class HealthPackages extends StatefulWidget {
+  const HealthPackages({super.key});
 
   @override
-  State<Tests> createState() => _TestsState();
+  State<HealthPackages> createState() => _HealthPackagesState();
 }
 
-class _TestsState extends State<Tests> {
+class _HealthPackagesState extends State<HealthPackages> {
 
   final supabase = Supabase.instance.client;
-  dynamic tests;
+  dynamic packages;
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    getTests();
+    getPackages();
   }
 
+  Future deletePackage(id) async{
+    await supabase.from('packages').delete().match({'id':id});
+    getPackages();
+  }
+
+  Future getPackages() async {
+    setState(() {
+      isLoading = true;
+    });
+    dynamic labId = await supabase.from('labs').select('id').match({'user_id':supabase.auth.currentUser!.id});
+    packages = await supabase.from('packages').select().match({'lab_id':labId[0]['id']}).order('id');
+    setState(() {
+      isLoading = false;
+    });
+  }  
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        children: [
-          addTest(),
-          isLoading? const SpinKitFadingCircle(color: ElabColors.primaryColor,): testList()
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Health Packages", style: TextStyle(fontWeight: FontWeight.bold,fontFamily: GoogleFonts.hammersmithOne().fontFamily),),
       ),
+      body:Column(
+        children: [
+          addPackages(),
+          isLoading? const SpinKitFadingCircle(color: ElabColors.primaryColor,): packageList(),
+        ],
+      ) ,
     );
   }
 
-
-  Padding addTest() {
+  Padding addPackages() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(5,0,5,10),
       child: Column(
@@ -47,7 +63,7 @@ class _TestsState extends State<Tests> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(onPressed: (){
-                Navigator.pushNamed(context, '/addtests');
+                Navigator.pushNamed(context, '/add_health_packages');
               }, 
                style:  ButtonStyle(
                   backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),
@@ -58,44 +74,43 @@ class _TestsState extends State<Tests> {
                     ),
                   ),
                 ),   
-              child: Text('Add Tests', style: TextStyle(color: Colors.white),)),
-              ElevatedButton(onPressed: (){
-                Navigator.pushNamed(context, '/health_packages');
-              }, 
-               style:  ButtonStyle(
-                  backgroundColor: const MaterialStatePropertyAll(ElabColors.secondaryColor),
-                  padding: const MaterialStatePropertyAll(EdgeInsets.fromLTRB(30, 10, 30, 10)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),   
-              child: Text('Health Packages', style: TextStyle(color: Colors.white),))
+              child: Text('Add Packages', style: TextStyle(color: Colors.white),)),
+
+              TextButton(onPressed: (){
+                getPackages();
+              }, child: Text('Reload'))
+            
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              isLoading ? const Text(''):Text('${tests.length} Tests', style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily,
+              isLoading ? const Text(''):Text('${packages.length} Packages', style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily,
                 fontSize: 16 , fontWeight: FontWeight.bold 
               )
               ),
           ]
           ),
-        ],
+        ]
       ),
     );
   }
 
-  Expanded testList() {
+  Expanded packageList() {
     return Expanded(
       child: RefreshIndicator(
-        onRefresh: getTests,
+        onRefresh: getPackages,
         child:ListView.builder(
-        itemCount: tests.length,
+        itemCount: packages.length,
         itemBuilder: (context, index){
-          return Container(
+          return InkWell(
+            onTap: (){
+              Navigator.pushNamed(context, '/view_packages',
+              arguments: {
+                'id':packages[index]['id']
+              });
+            }, 
+            child: Container(
             margin: const EdgeInsets.fromLTRB(5,8,5,5),
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -114,7 +129,7 @@ class _TestsState extends State<Tests> {
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(tests[index]['testname'], style:const TextStyle(
+                    Text(packages[index]['name'], style:const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 18
                     ),
                     ),
@@ -122,46 +137,27 @@ class _TestsState extends State<Tests> {
                     Row(
                       children: [
                         const Icon(Icons.currency_rupee_sharp, color: Colors.black,),
-                        Text(tests[index]['price'].toString(), style: const TextStyle(
+                        Text(packages[index]['price'].toString(), style: const TextStyle(
                           fontWeight: FontWeight.bold,color: Colors.green, fontSize: 18
                         ),)
                       ],
                     ),
-                    const SizedBox(height: 10,),
-                    Text('Requirements', style: TextStyle(color: ElabColors.greyColor,fontFamily: GoogleFonts.poppins().fontFamily, fontWeight: FontWeight.bold),),
-                    const SizedBox(height: 10,),
-                    Text(tests[index]['requirements'],)
                   ],
                 ),
                  trailing: GestureDetector(
                   onTap: () {
-                    deleteTest(tests[index]['id']);
+                    deletePackage(packages[index]['id']);
                   },
                   child: const Text('remove', style: TextStyle(color: Colors.red,fontSize: 16),),
                  )
                 )
 
-              );
+              )
+          );
         }
       )
       )
       );
   }
-
-  Future deleteTest(id) async{
-    await supabase.from('tests').delete().match({'id':id});
-    getTests();
-  }
-
-  Future getTests() async {
-    setState(() {
-      isLoading = true;
-    });
-    dynamic labId = await supabase.from('labs').select('id').match({'user_id':supabase.auth.currentUser!.id});
-    tests = await supabase.from('tests').select().match({'lab_id':labId[0]['id']}).order('id');
-    setState(() {
-      isLoading = false;
-    });
-  }  
 
 }

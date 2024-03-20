@@ -6,29 +6,56 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AddTests extends StatefulWidget {
-  const AddTests({super.key});
+class EditPackages extends StatefulWidget {
+  const EditPackages({super.key});
 
   @override
-  State<AddTests> createState() => _AddTestsState();
+  State<EditPackages> createState() => _EditPackagesState();
 }
 
-class _AddTestsState extends State<AddTests> {
+class _EditPackagesState extends State<EditPackages> {
 
   final supabase = Supabase.instance.client;
   bool isLoading = false;
+  dynamic package_id;
 
-  final TextEditingController testNameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   final TextEditingController requirementsController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero,(){
+      package_id = ModalRoute.of(context)?.settings.arguments as Map?;
+      getPackageDetails();
+    });
+  }
+
+  @override
   void dispose() {
-    testNameController.dispose();
+    nameController.dispose();
+    descriptionController.dispose();
     requirementsController.dispose();
     priceController.dispose();
     super.dispose();
 
+  }
+
+  Future getPackageDetails() async {
+    setState(() {
+      isLoading = true; 
+    });
+    final package = await supabase.from('packages').select().match({'id':package_id['id']});
+    nameController.text = package[0]['name'];
+    descriptionController.text = package[0]['description'];
+    requirementsController.text = package[0]['requirements'];
+    priceController.text = package[0]['price'].toString();
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -40,7 +67,7 @@ class _AddTestsState extends State<AddTests> {
           iconTheme: const IconThemeData(color: Colors.black),
           elevation: 0,
           backgroundColor: Colors.white,
-          title: Text("Add Test", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: GoogleFonts.hammersmithOne().fontFamily, color: Colors.black),),
+          title: Text("Add Package", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: GoogleFonts.hammersmithOne().fontFamily, color: Colors.black),),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0), 
@@ -48,11 +75,13 @@ class _AddTestsState extends State<AddTests> {
             const SpinKitFadingCircle(color:ElabColors.primaryColor ,)
           : SingleChildScrollView( child: Column(
             children: [
-              testName(),
+              packageName(),
               const SizedBox(height: 20,),
-              testRequirements(),
+              packageDescription(),
               const SizedBox(height: 20,),
-              testPrice(),
+              packageRequirements(),
+              const SizedBox(height: 20,),
+              packagePrice(),
               const SizedBox(height: 20,),
               addButton()
             ],
@@ -66,7 +95,7 @@ class _AddTestsState extends State<AddTests> {
 
   
 
-  Column testName() {
+  Column packageName() {
     return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -75,13 +104,30 @@ class _AddTestsState extends State<AddTests> {
                 TextField(decoration: const InputDecoration(border: OutlineInputBorder(), prefixIcon: 
                 Icon(Icons.science, color: Colors.black,)),
                 style: const TextStyle(fontWeight: FontWeight.bold),
-                controller: testNameController,
+                controller: nameController,
                 )
               ],
             );
   }
+  Column packageDescription() {
+    return   Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Test Description', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16, color: ElabColors.greyColor),),
+                const SizedBox(height: 5,),
+                TextField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration:  const InputDecoration(border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.list_alt_outlined, color: Colors.black,)),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  controller: descriptionController,
+                  )
+              ],
+            );
+  }
 
-  Column testRequirements() {
+  Column packageRequirements() {
     return   Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -99,7 +145,7 @@ class _AddTestsState extends State<AddTests> {
             );
   }
 
-  Column testPrice() {
+  Column packagePrice() {
     return  Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -136,18 +182,18 @@ class _AddTestsState extends State<AddTests> {
                   ),
                 ),   
               onPressed: () {
-                addTest();
+                addPacakge();
               }, 
               child:
-               Text('Add Test',style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, color: Colors.white)
+               Text('Update Package',style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, color: Colors.white)
                )
               ),
     );
   }
 
 
-  Future addTest() async{
-    if ([testNameController.text, priceController.text].any((text) => text.isEmpty)) { 
+  Future addPacakge() async{
+    if ([nameController.text, priceController.text, descriptionController.text].any((text) => text.isEmpty)) { 
 
         Fluttertoast.showToast(
           msg: "All Fields are required",
@@ -171,24 +217,22 @@ class _AddTestsState extends State<AddTests> {
       
 
       final Map<String, dynamic> labData = {
+        'id':package_id['id'],
         'lab_id': labId[0]['id'],
-        'testname' : testNameController.text,
+        'name' : nameController.text,
+        'description': descriptionController.text,
         'requirements':requirements,
         'price':int.parse(priceController.text)
       };
 
-      await supabase.from('tests').upsert([labData]);
-
-      testNameController.text = '';
-      requirementsController.text = '';
-      priceController.text = '';
+      await supabase.from('packages').upsert([labData]);
 
       setState(() {
         isLoading = false;
       });
 
       Fluttertoast.showToast(
-          msg: "Test Added Successfully",
+          msg: "Package Updated",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
@@ -196,6 +240,12 @@ class _AddTestsState extends State<AddTests> {
           textColor: Colors.white,
           fontSize: 16.0
         );
+
+        Navigator.pushNamed(context, '/view_packages',
+        arguments: {
+                'id':package_id['id']
+            });
+
     }
   }
 }

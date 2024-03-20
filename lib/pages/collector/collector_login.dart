@@ -6,14 +6,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class CollectorLogin extends StatefulWidget {
+  const CollectorLogin({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<CollectorLogin> createState() => _CollectorLoginState();
 }
 
-class _LoginState extends State<Login> {
+class _CollectorLoginState extends State<CollectorLogin> {
 
   bool emailValidationError = false;
   bool credentialError = false;
@@ -68,14 +68,14 @@ class _LoginState extends State<Login> {
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
-        final lab = await supabase.from('labs').select('id').match({'user_id':
+        final lab = await supabase.from('collector').select('id').match({'user_id':
         supabase.auth.currentUser!.id});
         if(lab.length < 1){
           await Supabase.instance.client.auth.signOut();
           throw Exception();
         }
         // ignore: use_build_context_synchronously
-        Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/collector_dashboard', (route) => false);
       }catch(e){
         setState(() {
             credentialError = true;
@@ -111,7 +111,7 @@ class _LoginState extends State<Login> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Log In as Laboratory", style: TextStyle(
+            Text("Log In as Collector", style: TextStyle(
               fontFamily: GoogleFonts.hammersmithOne().fontFamily, 
               fontSize: 22,
               fontWeight: FontWeight.bold

@@ -170,13 +170,9 @@ class _ViewBookingsState extends State<ViewBookings> {
                                   ),
                           const Text(" | ", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
 
-                          Text(convert24HourTo12Hour(bookingsData[index]['timeslot'].toString()), style: const TextStyle(fontSize: 16),)
+                          Text(convert24HourTo12Hour(bookingsData[index]['time'].toString()), style: const TextStyle(fontSize: 16),)
                         ],
                       ),
-                      const SizedBox(height: 10,),
-                      Text("${bookingsData[index]['tests'].length} tests booked", style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold,
-                      ),),
                       const SizedBox(height: 10,),
                       Row(
                         children: [
@@ -271,13 +267,9 @@ class _ViewBookingsState extends State<ViewBookings> {
                                     ),
                             const Text(" | ", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
 
-                            Text(convert24HourTo12Hour(booking[index]['timeslot'].toString()), style: const TextStyle(fontSize: 16),)
+                            Text(convert24HourTo12Hour(booking[index]['time'].toString()), style: const TextStyle(fontSize: 16),)
                           ],
                         ),
-                        const SizedBox(height: 10,),
-                        Text("${booking[index]['tests'].length} tests booked", style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold,
-                        ),),
                         const SizedBox(height: 10,),
                         Row(
                           children: [

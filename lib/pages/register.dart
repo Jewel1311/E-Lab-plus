@@ -305,7 +305,8 @@ class _RegisterState extends State<Register> {
               child:Text('Register', 
               style: TextStyle(
                 fontSize: 16,
-                fontFamily: GoogleFonts.poppins().fontFamily
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                color: Colors.white
               )
               )
               ),
@@ -451,7 +452,7 @@ Container mapView() {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Booking open from', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+          Text('Open from', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
           TextField(
             controller: opentimeController,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -473,7 +474,7 @@ Container mapView() {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Booking open till', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+          Text('Open till', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
           TextField(
             controller: closetimeController,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
