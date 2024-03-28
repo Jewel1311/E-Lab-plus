@@ -9,6 +9,7 @@ import 'package:elabplus/pages/edit_packages.dart';
 import 'package:elabplus/pages/health_packages.dart';
 import 'package:elabplus/pages/home.dart';
 import 'package:elabplus/pages/login.dart';
+import 'package:elabplus/pages/prescription_details.dart';
 import 'package:elabplus/pages/register.dart';
 import 'package:elabplus/pages/view_health_packages.dart';
 import 'package:elabplus/pages/viewmap.dart';
@@ -50,6 +51,7 @@ class ElabPlus extends StatelessWidget {
         '/collector_dashboard':(context) => const CollectorDashboard(),
         '/view_packages':(context) => const ViewPacakges(),
         '/edit_packages':(context) => const EditPackages(),
+        '/prescription_details':(context) => const PrescriptionDetails()
 
       },
     );

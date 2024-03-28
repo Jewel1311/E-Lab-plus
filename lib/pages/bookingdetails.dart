@@ -613,11 +613,17 @@ class _BookingDetailsState extends State<BookingDetails> {
                   fixedSize: MaterialStateProperty.all(
                     const Size(100, 40),
                   ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                 ),
                 child: Text('Reject',
                     style: TextStyle(
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white
                     )),
               ),
             ),
@@ -654,11 +660,17 @@ class _BookingDetailsState extends State<BookingDetails> {
                   fixedSize: MaterialStateProperty.all(
                     const Size(100, 40),
                   ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                 ),
                 child: Text('Accept',
                     style: TextStyle(
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white
                     )),
               ),
             ),

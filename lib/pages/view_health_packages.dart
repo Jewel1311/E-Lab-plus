@@ -29,7 +29,6 @@ class _ViewPacakgesState extends State<ViewPacakges> {
 
   Future getPackageDetails() async{
     package = await supabase.from('packages').select().match({'id':package_id['id']});
-    print(package);
 
     setState(() {
       isLoading = false;

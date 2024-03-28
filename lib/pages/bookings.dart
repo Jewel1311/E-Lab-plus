@@ -19,6 +19,7 @@ class _ViewBookingsState extends State<ViewBookings> {
   dynamic bookingCount;
   dynamic labId;
   bool isStream = true;
+  String selectedButtton = 'tests';
 
   final List<String> status = ['All','Pending', 'Confirmed', 'Rejected', 'Completed'];
   String selectedStatus =  'All';
@@ -63,6 +64,55 @@ class _ViewBookingsState extends State<ViewBookings> {
     });
 
   }
+  Future getPrescriptionData(String status) async {
+    setState(() {
+      isLoading = true;
+      isStream = false;
+    });
+
+    if(status == 'all'){
+      bookingsData=  await supabase.from('prescription').select().match({'lab_id':labId[0]['id']}).order('id');
+
+      bookingCount = await supabase.from('prescription').select('id').match({'lab_id':labId[0]['id'],});
+    }
+    else{
+
+      bookingsData=  await supabase.from('prescription').select().match({'lab_id':labId[0]['id'], 'status':status}).order('id');
+
+      bookingCount = await supabase.from('prescription').select('id').match({'lab_id':labId[0]['id'],
+      'status': status});
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+  }
+  Future getPackageData(String status) async {
+    setState(() {
+      isLoading = true;
+      isStream = false;
+    });
+
+    if(status == 'all'){
+      bookingsData=  await supabase.from('packages_booking').select().match({'lab_id':labId[0]['id']}).order('id');
+
+      bookingCount = await supabase.from('packages_booking').select('id').match({'lab_id':labId[0]['id'],});
+    }
+    else{
+
+      bookingsData=  await supabase.from('packages_booking').select().match({'lab_id':labId[0]['id'], 'status':status}).order('id');
+
+      bookingCount = await supabase.from('packages_booking').select('id').match({'lab_id':labId[0]['id'],
+      'status': status});
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+  }
+ 
   
   Color _getStatusColor(String status) {
   switch (status.toLowerCase()) {
@@ -118,6 +168,16 @@ class _ViewBookingsState extends State<ViewBookings> {
               ],
             ),
           ),
+          showBookingTypes(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8,0,8,0),
+            child: Row(
+              children: [
+                Text('Showing results of '),
+                Text(selectedButtton,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+              ],
+            ),
+          ),
           const SizedBox(height: 10,),
           Expanded(
           child: 
@@ -131,15 +191,73 @@ class _ViewBookingsState extends State<ViewBookings> {
     );
   }
 
+  Padding showBookingTypes() {
+    return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(onPressed: (){
+                setState(() {
+                  selectedButtton = 'tests';
+                });
+                getLabStream();
+              }, 
+              style: ButtonStyle(
+                  backgroundColor: const MaterialStatePropertyAll(ElabColors.secondaryColor),
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
+                    ),
+              child: Text('Tests', style: TextStyle(color: Colors.white),)),
+
+              ElevatedButton(onPressed: (){
+                setState(() {
+                  selectedButtton = 'prescription';
+                });
+                 getPrescriptionData('all');
+              }, 
+              style: ButtonStyle(
+                  backgroundColor: const MaterialStatePropertyAll(ElabColors.secondaryColor),
+                  
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
+                    ),
+              child: Text('Prescription', style: TextStyle(color: Colors.white),)),
+
+              ElevatedButton(onPressed: (){
+                setState(() {
+                  selectedButtton = 'packages';
+                });
+                 getPackageData('all');
+
+              }, 
+              style: ButtonStyle(
+                  backgroundColor: const MaterialStatePropertyAll(ElabColors.secondaryColor),
+                  
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
+                    ),
+              child: Text('Packages', style: TextStyle(color: Colors.white),)),
+            
+            ],
+          ),
+        );
+  }
+
   ListView showBookingData() {
     return ListView.builder(
           itemCount: bookingsData.length,
           itemBuilder: (context, index){
            return GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context,'/bookingdetails', arguments: {
+                if(selectedButtton == 'tests'){
+                  Navigator.pushNamed(context,'/bookingdetails', arguments: {
                   'bookingId' : bookingsData[index]['id']
                 });
+                }
+                else if(selectedButtton == 'prescription'){
+                  Navigator.pushNamed(context,'/prescription_details', arguments: {
+                  'bookingId' : bookingsData[index]['id']
+                });
+                }
+                
               },
               child: Container(
             margin: const EdgeInsets.fromLTRB(10,8,10,10),
@@ -213,9 +331,20 @@ class _ViewBookingsState extends State<ViewBookings> {
                 setState(() {
                   selectedStatus = value!;
                   if(selectedStatus == 'Confirmed' || selectedStatus == 'Rejected' || selectedStatus == 'Pending' || selectedStatus == 'Completed'){
-                    getBookingData(selectedStatus.toLowerCase());
+                    if(selectedButtton == 'prescription')
+                      getPrescriptionData(selectedStatus.toLowerCase());
+                    else if(selectedButtton == 'packages')
+                      getPackageData(selectedStatus.toLowerCase());
+                    else
+                      getBookingData(selectedStatus.toLowerCase());
+
                   }else{
-                    getLabStream();
+                    if(selectedButtton == 'prescription')
+                      getPrescriptionData('all');
+                    else if(selectedButtton == 'packages')
+                      getPackageData('all');
+                    else
+                      getLabStream();
                   }
                 });
               },
